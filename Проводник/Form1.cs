@@ -16,30 +16,38 @@ namespace Проводник
         public Explorer()
         {
             InitializeComponent();
-            var rootC = new TreeNode() { Text = "C:", Tag = "c:\\" };
-            FileTree.Nodes.Add(rootC);
-            Build(rootC);
-            rootC.Expand();
-            var rootD = new TreeNode() { Text = "D:", Tag = "d:\\" };
-            FileTree.Nodes.Add(rootD);
-            Build(rootD);
-            rootD.Expand();
             listView.SmallImageList = imageList;
-            findtb.Text = @"C:\Users\Е\Desktop";
+            PopulatetreeView();
         }
-        private void Build(TreeNode parent)
+        private void PopulatetreeView()
         {
-            var str = parent.Tag as string;
-            parent.Nodes.Clear();
+            TreeNode rootNode;
+            DirectoryInfo info = new DirectoryInfo(@"../..");
+            if (info.Exists)
+            {
+                rootNode = new TreeNode(info.Name);
+                rootNode.Tag = info;
+                GetDiretories(info.GetDirectories(), rootNode);
+                FileTree.Nodes.Add(rootNode);
+            }
+        }
+        private void GetDiretories(DirectoryInfo[] subDirs, TreeNode nodeToAddTo)
+        {
+            TreeNode aNode;
+            DirectoryInfo[] subSubDirs;
             try
             {
-                foreach (var dir in Directory.GetDirectories(str))
+                foreach (DirectoryInfo subDir in subDirs)
                 {
-                    parent.Nodes.Add(new TreeNode(Path.GetFileName(dir), new[] { new TreeNode("...") }) { Tag = dir });
-                }
-                foreach(var file in Directory.GetFiles(str))
-                {
-                    parent.Nodes.Add(new TreeNode(Path.GetFileName(file), 1, 1) { Tag = file });
+                    aNode = new TreeNode(subDir.Name, 0, 0);
+                    aNode.Tag = subDir;
+                    aNode.ImageKey = "folder";
+                    subSubDirs = subDir.GetDirectories();
+                    if(subSubDirs.Length != 0)
+                    {
+                        GetDiretories(subSubDirs, aNode);
+                    }
+                    nodeToAddTo.Nodes.Add(aNode);
                 }
             }
             catch (Exception ex)
@@ -48,22 +56,33 @@ namespace Проводник
             }
         }
 
-        private void FileTree_BeforeExpand(object sender, TreeViewCancelEventArgs e)
+        private void FileTree_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
         {
-            Build(e.Node);
+            TreeNode newSelected = e.Node;
+            listView.Items.Clear();
+            DirectoryInfo nodeDI = (DirectoryInfo)newSelected.Tag;
+            ListViewItem.ListViewSubItem[] subItems;
+            ListViewItem item = null;
+            foreach (DirectoryInfo dir in nodeDI.GetDirectories())
+            {
+                item = new ListViewItem(dir.Name, 0);
+                subItems = new ListViewItem.ListViewSubItem[]
+                { new ListViewItem.ListViewSubItem(item, "Directory"),
+                  new ListViewItem.ListViewSubItem(item, dir.LastAccessTime.ToShortDateString())};
+                item.SubItems.AddRange(subItems);
+                listView.Items.Add(item);
+            }
+            foreach(FileInfo file in nodeDI.GetFiles())
+            {
+                item = new ListViewItem(file.Name, 1);
+                subItems = new ListViewItem.ListViewSubItem[]
+                    { new ListViewItem.ListViewSubItem(item, "File"),
+                    new ListViewItem.ListViewSubItem(item, file.LastAccessTime.ToShortDateString())};
+                item.SubItems.AddRange(subItems);
+                listView.Items.Add(item);
+            }
+            listView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
         }
 
-        private void findbutton_Click(object sender, EventArgs e)
-        {
-            string path = findtb.Text;
-            string[] files = Directory.GetFiles(path);
-            foreach(string file in files)
-            {
-                ListViewItem lvi = new ListViewItem();
-                lvi.Text = file.Remove(0, file.LastIndexOf('\\') + 1);
-                lvi.ImageIndex = 0;
-                listView.Items.Add(lvi);
-            }
-        }
     }
 }

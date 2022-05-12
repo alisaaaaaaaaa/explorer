@@ -52,8 +52,9 @@ namespace Проводник
             this.скопироватьToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.свойстваToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.listView = new System.Windows.Forms.ListView();
-            this.findtb = new System.Windows.Forms.TextBox();
-            this.findbutton = new System.Windows.Forms.Button();
+            this.column1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.column2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.column3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.menuStrip1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -70,7 +71,7 @@ namespace Проводник
             this.FileTree.SelectedImageIndex = 0;
             this.FileTree.Size = new System.Drawing.Size(204, 418);
             this.FileTree.TabIndex = 0;
-            this.FileTree.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.FileTree_BeforeExpand);
+            this.FileTree.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.FileTree_NodeMouseClick);
             // 
             // imageList
             // 
@@ -212,32 +213,34 @@ namespace Проводник
             // 
             // listView
             // 
+            this.listView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.column1,
+            this.column2,
+            this.column3});
             this.listView.HideSelection = false;
-            this.listView.Location = new System.Drawing.Point(211, 52);
+            this.listView.Location = new System.Drawing.Point(211, 27);
             this.listView.Name = "listView";
-            this.listView.Size = new System.Drawing.Size(577, 393);
+            this.listView.Size = new System.Drawing.Size(577, 418);
             this.listView.SmallImageList = this.imageList;
             this.listView.StateImageList = this.imageList;
             this.listView.TabIndex = 6;
             this.listView.UseCompatibleStateImageBehavior = false;
-            this.listView.View = System.Windows.Forms.View.List;
+            this.listView.View = System.Windows.Forms.View.Details;
             // 
-            // findtb
+            // column1
             // 
-            this.findtb.Location = new System.Drawing.Point(211, 27);
-            this.findtb.Name = "findtb";
-            this.findtb.Size = new System.Drawing.Size(480, 20);
-            this.findtb.TabIndex = 7;
+            this.column1.Text = "Имя";
+            this.column1.Width = 167;
             // 
-            // findbutton
+            // column2
             // 
-            this.findbutton.Location = new System.Drawing.Point(697, 27);
-            this.findbutton.Name = "findbutton";
-            this.findbutton.Size = new System.Drawing.Size(91, 20);
-            this.findbutton.TabIndex = 8;
-            this.findbutton.Text = "Найти";
-            this.findbutton.UseVisualStyleBackColor = true;
-            this.findbutton.Click += new System.EventHandler(this.findbutton_Click);
+            this.column2.Text = "Тип";
+            this.column2.Width = 161;
+            // 
+            // column3
+            // 
+            this.column3.Text = "Последний";
+            this.column3.Width = 244;
             // 
             // Explorer
             // 
@@ -245,8 +248,6 @@ namespace Проводник
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.findbutton);
-            this.Controls.Add(this.findtb);
             this.Controls.Add(this.listView);
             this.Controls.Add(this.FileTree);
             this.Controls.Add(this.menuStrip1);
@@ -284,8 +285,9 @@ namespace Проводник
         private System.Windows.Forms.ToolStripMenuItem открытьToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem вставитьToolStripMenuItem;
         private System.Windows.Forms.ListView listView;
-        private System.Windows.Forms.TextBox findtb;
-        private System.Windows.Forms.Button findbutton;
+        private System.Windows.Forms.ColumnHeader column1;
+        private System.Windows.Forms.ColumnHeader column2;
+        private System.Windows.Forms.ColumnHeader column3;
     }
 }
 
