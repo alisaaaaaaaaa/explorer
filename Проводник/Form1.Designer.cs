@@ -52,9 +52,14 @@ namespace Проводник
             this.скопироватьToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.свойстваToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.listView = new System.Windows.Forms.ListView();
-            this.column1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.column2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.column3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnSize = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnChange = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.showfileBox = new System.Windows.Forms.RichTextBox();
+            this.selectedfileSB = new System.Windows.Forms.StatusStrip();
+            this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.fontDialog = new System.Windows.Forms.FontDialog();
+            this.colorDialog = new System.Windows.Forms.ColorDialog();
             this.menuStrip1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -71,7 +76,8 @@ namespace Проводник
             this.FileTree.SelectedImageIndex = 0;
             this.FileTree.Size = new System.Drawing.Size(204, 418);
             this.FileTree.TabIndex = 0;
-            this.FileTree.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.FileTree_NodeMouseClick);
+            this.FileTree.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.FileTree_BeforeExpand);
+            this.FileTree.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.FileTree_AfterSelect);
             // 
             // imageList
             // 
@@ -108,7 +114,7 @@ namespace Проводник
             this.папкуToolStripMenuItem,
             this.файлToolStripMenuItem1});
             this.создатьToolStripMenuItem.Name = "создатьToolStripMenuItem";
-            this.создатьToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.создатьToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.создатьToolStripMenuItem.Text = "Создать";
             // 
             // папкуToolStripMenuItem
@@ -126,19 +132,20 @@ namespace Проводник
             // удалитьToolStripMenuItem
             // 
             this.удалитьToolStripMenuItem.Name = "удалитьToolStripMenuItem";
-            this.удалитьToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.удалитьToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.удалитьToolStripMenuItem.Text = "Удалить";
+            this.удалитьToolStripMenuItem.Click += new System.EventHandler(this.удалитьToolStripMenuItem_Click);
             // 
             // скопироватьToolStripMenuItem
             // 
             this.скопироватьToolStripMenuItem.Name = "скопироватьToolStripMenuItem";
-            this.скопироватьToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.скопироватьToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.скопироватьToolStripMenuItem.Text = "Копировать";
             // 
             // вставитьToolStripMenuItem
             // 
             this.вставитьToolStripMenuItem.Name = "вставитьToolStripMenuItem";
-            this.вставитьToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.вставитьToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.вставитьToolStripMenuItem.Text = "Вставить";
             // 
             // видToolStripMenuItem
@@ -154,14 +161,16 @@ namespace Проводник
             // цветФонаToolStripMenuItem
             // 
             this.цветФонаToolStripMenuItem.Name = "цветФонаToolStripMenuItem";
-            this.цветФонаToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+            this.цветФонаToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.цветФонаToolStripMenuItem.Text = "Цвет фона";
+            this.цветФонаToolStripMenuItem.Click += new System.EventHandler(this.цветФонаToolStripMenuItem_Click);
             // 
             // размерШрифтаToolStripMenuItem
             // 
             this.размерШрифтаToolStripMenuItem.Name = "размерШрифтаToolStripMenuItem";
-            this.размерШрифтаToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+            this.размерШрифтаToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.размерШрифтаToolStripMenuItem.Text = "Размер шрифта ";
+            this.размерШрифтаToolStripMenuItem.Click += new System.EventHandler(this.размерШрифтаToolStripMenuItem_Click);
             // 
             // contextMenuStrip1
             // 
@@ -213,34 +222,56 @@ namespace Проводник
             // 
             // listView
             // 
+            this.listView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.listView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.column1,
-            this.column2,
-            this.column3});
+            this.columnName,
+            this.columnSize,
+            this.columnChange});
             this.listView.HideSelection = false;
             this.listView.Location = new System.Drawing.Point(211, 27);
             this.listView.Name = "listView";
-            this.listView.Size = new System.Drawing.Size(577, 418);
+            this.listView.Size = new System.Drawing.Size(577, 229);
             this.listView.SmallImageList = this.imageList;
             this.listView.StateImageList = this.imageList;
             this.listView.TabIndex = 6;
             this.listView.UseCompatibleStateImageBehavior = false;
             this.listView.View = System.Windows.Forms.View.Details;
+            this.listView.ItemActivate += new System.EventHandler(this.listView_ItemActivate);
             // 
-            // column1
+            // columnName
             // 
-            this.column1.Text = "Имя";
-            this.column1.Width = 167;
+            this.columnName.Text = "Имя";
+            this.columnName.Width = 99;
             // 
-            // column2
+            // columnSize
             // 
-            this.column2.Text = "Тип";
-            this.column2.Width = 161;
+            this.columnSize.Text = "Размер";
+            this.columnSize.Width = 90;
             // 
-            // column3
+            // columnChange
             // 
-            this.column3.Text = "Последний";
-            this.column3.Width = 244;
+            this.columnChange.Text = "Изменен ";
+            this.columnChange.Width = 130;
+            // 
+            // showfileBox
+            // 
+            this.showfileBox.Location = new System.Drawing.Point(211, 262);
+            this.showfileBox.Name = "showfileBox";
+            this.showfileBox.ReadOnly = true;
+            this.showfileBox.Size = new System.Drawing.Size(577, 183);
+            this.showfileBox.TabIndex = 7;
+            this.showfileBox.Text = "";
+            // 
+            // selectedfileSB
+            // 
+            this.selectedfileSB.Location = new System.Drawing.Point(0, 428);
+            this.selectedfileSB.Name = "selectedfileSB";
+            this.selectedfileSB.Size = new System.Drawing.Size(800, 22);
+            this.selectedfileSB.TabIndex = 8;
+            // 
+            // openFileDialog
+            // 
+            this.openFileDialog.FileName = "openFileDialog1";
             // 
             // Explorer
             // 
@@ -248,6 +279,8 @@ namespace Проводник
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.selectedfileSB);
+            this.Controls.Add(this.showfileBox);
             this.Controls.Add(this.listView);
             this.Controls.Add(this.FileTree);
             this.Controls.Add(this.menuStrip1);
@@ -285,9 +318,14 @@ namespace Проводник
         private System.Windows.Forms.ToolStripMenuItem открытьToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem вставитьToolStripMenuItem;
         private System.Windows.Forms.ListView listView;
-        private System.Windows.Forms.ColumnHeader column1;
-        private System.Windows.Forms.ColumnHeader column2;
-        private System.Windows.Forms.ColumnHeader column3;
+        private System.Windows.Forms.ColumnHeader columnName;
+        private System.Windows.Forms.ColumnHeader columnSize;
+        private System.Windows.Forms.ColumnHeader columnChange;
+        private System.Windows.Forms.RichTextBox showfileBox;
+        private System.Windows.Forms.StatusStrip selectedfileSB;
+        private System.Windows.Forms.OpenFileDialog openFileDialog;
+        private System.Windows.Forms.FontDialog fontDialog;
+        private System.Windows.Forms.ColorDialog colorDialog;
     }
 }
 
